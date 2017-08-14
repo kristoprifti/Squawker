@@ -16,6 +16,7 @@
 
 package android.example.com.squawker;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.example.com.squawker.provider.SquawkContract;
 import android.support.v7.widget.RecyclerView;
@@ -31,25 +32,23 @@ import java.util.Date;
 /**
  * Converts cursor data for squawk messages into visible list items in a RecyclerView
  */
-public class SquawkAdapter extends RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder> {
+class SquawkAdapter extends RecyclerView.Adapter<SquawkAdapter.SquawkViewHolder> {
 
 
     private Cursor mData;
+    @SuppressLint("SimpleDateFormat")
     private static SimpleDateFormat sDateFormat = new SimpleDateFormat("dd MMM");
-
 
     private static final long MINUTE_MILLIS = 1000 * 60;
     private static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final long DAY_MILLIS = 24 * HOUR_MILLIS;
-
 
     @Override
     public SquawkViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_squawk_list, parent, false);
 
-        SquawkViewHolder vh = new SquawkViewHolder(v);
-        return vh;
+        return new SquawkViewHolder(v);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class SquawkAdapter extends RecyclerView.Adapter<SquawkAdapter.SquawkView
 
         // Get the date for displaying
         long dateMillis = mData.getLong(MainActivity.COL_NUM_DATE);
-        String date = "";
+        String date;
         long now = System.currentTimeMillis();
 
         // Change how the date is displayed depending on whether it was written in the last minute,
@@ -116,18 +115,18 @@ public class SquawkAdapter extends RecyclerView.Adapter<SquawkAdapter.SquawkView
         return mData.getCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor) {
         mData = newCursor;
         notifyDataSetChanged();
     }
 
-    public class SquawkViewHolder extends RecyclerView.ViewHolder {
+    class SquawkViewHolder extends RecyclerView.ViewHolder {
         final TextView authorTextView;
         final TextView messageTextView;
         final TextView dateTextView;
         final ImageView authorImageView;
 
-        public SquawkViewHolder(View layoutView) {
+        SquawkViewHolder(View layoutView) {
             super(layoutView);
             authorTextView = (TextView) layoutView.findViewById(R.id.author_text_view);
             messageTextView = (TextView) layoutView.findViewById(R.id.message_text_view);
